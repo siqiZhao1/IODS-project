@@ -19,7 +19,7 @@ library(ggplot2)
 
 p <- ggpairs(students2014, mapping=aes(col=gender, alpha=0.3),lowe=list(combo=wrap('facethist', bins=20)))
 p
-#Describe and interpret the outputs, commenting on the distributions of the variables and the relationships between them.
+# There is an extremely significant positive relationship between attitude of students and points.For male,age is negative related with points.
 
 
 my_model1 <- lm (points ~ attitude + stra + surf, data = students2014)
@@ -27,11 +27,9 @@ summary(my_model1)
 
 my_model2 <- lm (points ~ attitude + stra, data = students2014)
 summary(my_model2)
-# comment and interpret the results. Explain and interpret the statistical test related to the model parameters.
-
-#explain the relationship between the chosen explanatory variables and the target variable (interpret the model parameters). Explain and interpret the multiple R squared of the model.
-
+# In the first regression model, points as the target varable together with attitude, stra and surf as explantory variables, the model can be used because the P value is less than 0.001(extremely significant) even though there is no significantly relationships between stra, surf and points.
+#Model2 can explain the 20.74% changes of points.
 par(mfrow=c(2,2))
 plot(my_model2, which=c(1,2,5))
 
-#Explain the assumptions of the model and interpret the validity of those assumptions based on the diagnostic plots.
+# The data is mostly Gaussian distribution, according to the linear qq plots. The model is sensible based on these three plots.
