@@ -10,4 +10,5 @@ date()
 
 ```
 The text continues here.
+
 Learning R is an interesting process even though there are a lot of difficulties which can not be sloved sometimes. I hope I could learn more and more in this course.I found this course in weboodi.
