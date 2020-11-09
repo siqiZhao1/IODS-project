@@ -11,7 +11,6 @@ p3 <- p2+geom_smooth(method = 'lm')
 p4 <- p3+ggtitle('attitude of students versus exam points')
 p4
 
-
 pairs(students2014[-1])
 
 library(GGally)
