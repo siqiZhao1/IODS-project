@@ -1,0 +1,105 @@
+# Logistic Regression and cross validation
+
+---
+title: "chapter3.Rmd"
+name: 'siqizhao'
+output: html_document
+font_size: 12pt
+---
+```{r}
+
+alc <- read.table('http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/alc.txt', sep=',', header = TRUE)
+
+```
+---
+In this data set, there are 35 variables and 382 observations in total.The variables are: school,sex,age,address,famsize,Pstatus,Medu,Fedu,Mjob,Fjob reason,nursery,internet,guardian,traveltime studytime,failures,schoolsup,famsup,paid activities,higher,romantic,famrel,freetime goout,Dalc,Walc,health,absences,G1,G2,G3,alc_use,high_use.
+---
+
+I chose failures, absences,traveltime and activities as explainary variables to explore the relationsips between them and the target variable-high_use.The results are as below(three of them have significatly positive relationship with high_use):
+high_use=0.4176*failures-1.0157
+high_use=0.0683*absences-1.2640
+high_use=0.4290*traveltime-1.5146
+
+So, the high_use valus will increase with the increase of failures, absences and traveltime. However, there is no significant relationship between activities and high_use.
+
+---
+```{r}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+gather(alc) %>% glimpse
+gather(alc) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()
+g1 <- ggplot(alc, aes(x = high_use, y = failures, col = sex))
+g1 + geom_boxplot() + ylab("failures")
+g2 <- ggplot(alc, aes(x = high_use, y = absences, col = sex))
+g2 + geom_boxplot() + ggtitle("Student absences by alcohol consumption and sex")
+```
+
+If we look at the combined bar chart, we can find the numbers of students who attend extra-curricular activities and the students who don't are almost close, which can tell us the non-significat relationship between activities and high_use is sensible.Let's use the same principle to explain the other relationships, and the results should be consistent with the original hypothese.
+
+---
+Based on the results of Logistic regression analysis between failures&absences&traveltime&activities and high_use, the fitted model is as below:
+
+(Intercept)      failures      absences    traveltime activitiesyes 
+-1.86181552    0.36618544    0.07004812    0.42610620   -0.32180313 
+
+ OR     2.5 %    97.5 %
+(Intercept)   0.1553903 0.0828279 0.2841262
+failures      1.4422227 1.0755782 1.9361180
+absences      1.0725598 1.0374448 1.1130908
+traveltime    1.5312834 1.1164457 2.1057338
+activitiesyes 0.7248409 0.4542950 1.1528149
+
+high_use= 0.36619 * failures+0.07005 * absences + 0.42611 * travelime -1.86182
+
+There is no significat relationship between activities and high_use, which is same with the previous hypothese, and should be removed fromt the whole model.
+---
+The 2x2 cross tabulation of predictions is as below:
+
+   prediction
+     
+high_use FALSE TRUE
+
+   FALSE   261    9
+   
+   TRUE     87   25
+
+
+--- 
+```{r}
+m5 <- glm(high_use ~ failures+absences+traveltime, data = alc, family = "binomial")
+probabilities <- predict(m5, type = "response")
+alc <- mutate(alc, probability = probabilities)
+alc <- mutate(alc, prediction = probability > 0.5)
+select(alc, failures, absences, traveltime, high_use, probability, prediction) %>% tail(10)
+table(high_use = alc$high_use, prediction = alc$prediction)
+g <- ggplot(alc, aes(x = probability, y = high_use, col = prediction))
+g + geom_point()
+table(high_use = alc$high_use, prediction = alc$prediction) %>% prop.table %>% addmargins
+```
+
+---
+According to the 10-folds cross-validation on your mode, I got a smaller error (0.2591623) than Datacamp, which means that my model has better test set performance.
+
+---
+I made two different fited model with more predictors;model6 has 5 predictors which are failures,absences,traveltime,higher as well as sex; while model 7 has 4 explainary factors.
+
+The 10 folds cross validation results are as below:
+
+m6-> 0.2408377
+m7-> 0.2382199
+
+Compared with m5 (0.2591623), the errors of m7 is the smallest one which has one more predictor than m5.The fitted model is:
+
+(Intercept)    failures    absences  traveltime        sexM 
+-2.51975566  0.36718070  0.07462037  0.39558320  0.96465837
+
+high_use= 0.36718070 * failures + 0.07462037 * absences + 0.39558320 * traveltime + 0.96465837 * sexM -2.51975566
+
+
+
+
+
+
+
+
