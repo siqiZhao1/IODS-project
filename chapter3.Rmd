@@ -11,18 +11,23 @@ font_size: 12pt
 alc <- read.table('http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/alc.txt', sep=',', header = TRUE)
 
 ```
----
+
+
 In this data set, there are 35 variables and 382 observations in total.The variables are: school,sex,age,address,famsize,Pstatus,Medu,Fedu,Mjob,Fjob reason,nursery,internet,guardian,traveltime studytime,failures,schoolsup,famsup,paid activities,higher,romantic,famrel,freetime goout,Dalc,Walc,health,absences,G1,G2,G3,alc_use,high_use.
----
+
+
+
 
 I chose failures, absences,traveltime and activities as explainary variables to explore the relationsips between them and the target variable-high_use.The results are as below(three of them have significatly positive relationship with high_use):
 high_use=0.4176*failures-1.0157
 high_use=0.0683*absences-1.2640
 high_use=0.4290*traveltime-1.5146
 
+
+
 So, the high_use valus will increase with the increase of failures, absences and traveltime. However, there is no significant relationship between activities and high_use.
 
----
+
 ```{r}
 library(ggplot2)
 library(tidyr)
@@ -35,10 +40,14 @@ g2 <- ggplot(alc, aes(x = high_use, y = absences, col = sex))
 g2 + geom_boxplot() + ggtitle("Student absences by alcohol consumption and sex")
 ```
 
+
+
 If we look at the combined bar chart, we can find the numbers of students who attend extra-curricular activities and the students who don't are almost close, which can tell us the non-significat relationship between activities and high_use is sensible.Let's use the same principle to explain the other relationships, and the results should be consistent with the original hypothese.
 
----
+
 Based on the results of Logistic regression analysis between failures&absences&traveltime&activities and high_use, the fitted model is as below:
+
+
 
 (Intercept)      failures      absences    traveltime activitiesyes 
 -1.86181552    0.36618544    0.07004812    0.42610620   -0.32180313 
@@ -53,19 +62,19 @@ activitiesyes 0.7248409 0.4542950 1.1528149
 high_use= 0.36619 * failures+0.07005 * absences + 0.42611 * travelime -1.86182
 
 There is no significat relationship between activities and high_use, which is same with the previous hypothese, and should be removed fromt the whole model.
----
+
 The 2x2 cross tabulation of predictions is as below:
 
    prediction
      
-high_use FALSE TRUE
+high_use   FALSE   TRUE
 
-   FALSE   261    9
+   FALSE       261        9
    
-   TRUE     87   25
+   TRUE         87        25
 
 
---- 
+
 ```{r}
 m5 <- glm(high_use ~ failures+absences+traveltime, data = alc, family = "binomial")
 probabilities <- predict(m5, type = "response")
@@ -78,10 +87,12 @@ g + geom_point()
 table(high_use = alc$high_use, prediction = alc$prediction) %>% prop.table %>% addmargins
 ```
 
----
+
 According to the 10-folds cross-validation on your mode, I got a smaller error (0.2591623) than Datacamp, which means that my model has better test set performance.
 
----
+
+
+
 I made two different fited model with more predictors;model6 has 5 predictors which are failures,absences,traveltime,higher as well as sex; while model 7 has 4 explainary factors.
 
 The 10 folds cross validation results are as below:
