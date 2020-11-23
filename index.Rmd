@@ -35,3 +35,6 @@ output:
 # This will include Chapter 3 (that is updated in its own file) in the document.
 ```
 ***
+```{r}
+
+```

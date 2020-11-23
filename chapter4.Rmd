@@ -101,12 +101,19 @@ table(correct = correct_classes, predicted = lda.pred$class)
 
 ```
 
-## COMMENTS...for LDA
+
+
 
 
 ```{r}
-# load MASS and Boston
+
+r = getOption("repos")
+r["CRAN"] = "http://cran.us.r-project.org"
+options(repos = r)
+
+# access the MASS package
 library(MASS)
+
 data('Boston')
 
 # center and standardize variables
@@ -130,5 +137,29 @@ km <-kmeans(boston_scaled, centers = 3)
 # plot the Boston dataset with clusters
 pairs(boston_scaled, col = km$cluster)
 
+## Bonus
+
+# k-means clustering
+km <-kmeans(boston_scaled, centers = 3)
+
+# plot the Boston dataset with clusters
+pairs(boston_scaled, col = km$cluster)
+
+## Superbonus
+
+model_predictors <- dplyr::select(train, -crime)
+
+# check the dimensions
+dim(model_predictors)
+dim(lda.fit$scaling)
+
+# matrix multiplication
+matrix_product <- as.matrix(model_predictors) %*% lda.fit$scaling
+matrix_product <- as.data.frame(matrix_product)
+
+install.packages("plotly")
+
+plotly::plot_ly(x = matrix_product$LD1, y = matrix_product$LD2, z =  matrix_product$LD3, type= 'scatter3d', mode='markers', color=train$crime)
 ```
+
 
