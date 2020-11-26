@@ -33,6 +33,24 @@ join_by <- c("C")
 human <- inner_join(hd, gii, by = join_by, suffix = c(".hd", ".gii"))
 
 colnames(human)
-glimpse(human)
+
 
 write.csv(human, file = 'human')
+
+
+library(stringr)
+str(human$GNI)
+str_replace(human$GNI, pattern=",", replace ="") %>% as.numeric
+
+
+keep <- c("Country", "Edu2.FM", "Labo.FM", "Life.Exp", "Edu.Exp", "GNI", "Mat.Mor", "Ado.Birth", "Parli.F")
+human <- select(human, one_of(keep))
+complete.cases(human)
+data.frame(human[-1], comp = complete.cases(human))
+human_ <- filter(human, complete.cases(human))
+
+str(human_)
+
+write.csv(human_, file = 'human_')
+
+

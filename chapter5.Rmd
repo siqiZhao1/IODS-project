@@ -1,0 +1,77 @@
+---
+title: "chapter5"
+output: html_document
+---
+
+human <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human2.txt", sep  =",", header = T)
+str(human)
+summary(human) 
+
+library(GGally)
+library(dplyr)
+library(corrplot)
+library(tidyr)
+install.packages('FactoMineR')
+library(FactoMineR)
+
+```{r}
+
+# visualize the 'human' variables
+
+ggpairs(human)
+
+# compute the correlation matrix and visualize it with corrplot
+
+cor(human) %>% corrplot
+
+
+```
+
+In this dataset, there are in total 155 observations of 8 variables. Form the plot of pairs, we ccould see that almost all the parament are not normal distribution. As for the relationships between different variaables, there is an significantly negative relationship betweeb Mat.Mor and life.Exp, while positive corrlation between life.Exp and Edu.Exp. Seems that Parli.F doesn't have obversly relationships with any other variables, according to the corrplot.
+
+```{r}
+
+pca_human <- prcomp(human)
+s1 <- summary(pca_human)
+s1
+biplot(pca_human, choices = 1:2, cex = c(0.8, 1), col = c("grey40", "deeppink2"))
+
+
+human_std <- scale(human)
+summary(human_std)
+pca_human_std <- prcomp(human_std)
+s2 <- summary(pca_human_std)
+s2
+biplot(pca_human_std, choices = 1:2, cex = c(0.8, 1), col = c("grey40", "deeppink2"))
+
+
+pca_pr_std <- round(100*s2$importance[2,], digits = 1) 
+pca_pr_std
+pc_lab_std <- paste0(names(pca_pr_std), " (", pca_pr_std, "%)")
+biplot(pca_human_std, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = pc_lab_std[1], ylab = pc_lab_std[2])
+
+```
+
+interpret PCA
+
+```{r}
+data(tea)
+str(tea)
+dim(tea)
+
+
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
+tea_time <- select(tea, one_of(keep_columns))
+summary(tea_time)
+str(tea_time)
+gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
+
+
+mca <- MCA(tea_time, graph = FALSE)
+summary(mca)
+plot(mca, invisible=c("ind"), habillage = "quali")
+
+```
+
+comments
+
