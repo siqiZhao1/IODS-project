@@ -1,8 +1,5 @@
-#Dimensionality reduction techniques
----
-title: "chapter5"
-output: html_document
----
+# Dimensionality reduction techniques
+
 ```{r}
 human <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human2.txt", sep  =",", header = T)
 str(human)
@@ -17,6 +14,7 @@ install.packages('FactoMineR')
 
 ```{r}
 library(GGally)
+library(ggplot2)
 library(dplyr)
 library(corrplot)
 library(tidyr)
@@ -63,13 +61,17 @@ biplot(pca_human_std, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = pc
 interpret PCA
 
 ```{r}
+library(GGally)
+library(corrplot)
+library(magrittr)
+
 data(tea)
 str(tea)
 dim(tea)
 
 
 keep_columns <- c("Tea", "How", "how", "sugar", "where", "lunch")
-tea_time <- select(tea, one_of(keep_columns))
+tea_time <- dplyr::select(tea, one_of(keep_columns))
 summary(tea_time)
 str(tea_time)
 gather(tea_time) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar() + theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 8))
