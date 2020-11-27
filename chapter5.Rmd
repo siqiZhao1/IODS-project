@@ -33,7 +33,9 @@ ggpairs(human)
 cor(human) %>% corrplot
 ```
 
-In this dataset, there are in total 155 observations of 8 variables. Form the plot of pairs, we ccould see that almost all the parament are not normal distribution. As for the relationships between different variaables, there is an significantly negative relationship betweeb Mat.Mor and life.Exp, while positive corrlation between life.Exp and Edu.Exp. Seems that Parli.F doesn't have obversly relationships with any other variables, according to the corrplot.
+In this dataset, there are in total 155 observations of 8 variables. 
+
+Form the plot of pairs, we ccould see that almost all the parament are not normal distribution. As for the relationships between different variaables, there is an significantly negative relationship betweeb Mat.Mor and life.Exp, while positive corrlation between life.Exp and Edu.Exp. Seems that Parli.F doesn't have obversly relationships with any other variables, according to the corrplot.
 
 ```{r}
 
@@ -58,7 +60,7 @@ biplot(pca_human_std, cex = c(0.8, 1), col = c("grey40", "deeppink2"), xlab = pc
 
 ```
 
-interpret PCA
+If we use oringinal data to do the PCA, we can see that PC1 could explain almost 100% of variables, which means the reduction of dimensions is not succssful.After scalling them, the results look more sensible. This process tells us that scalling or standaring data before PCA is necessary, but I would guess this is especially important to data with unmormal distribution.
 
 ```{r}
 library(GGally)
@@ -82,6 +84,6 @@ summary(mca)
 plot(mca, invisible=c("ind"), habillage = "quali")
 
 ```
+Dim1 can explain approximitalt 15.24% of variables, mostly unpackageed and tea shop with positive relationships.Dim2 can explain approximitalt 14.23% of variables, mostly other and chain store+tea shop with positive relationships.
 
-comments
 
